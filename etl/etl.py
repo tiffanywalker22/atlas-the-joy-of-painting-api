@@ -111,3 +111,33 @@ subjects = Table(
     Column('winter', Boolean),
     Column('wood_framed', Boolean)
 )
+
+metadata.create_all(engine)
+
+def load_csv(file_path):
+    with open(file_path, 'r') as file:
+        reader = csv.DictReader(file)
+        return list(reader)
+    
+def load_json(file_path):
+    with open(file_path, 'r') as file:
+        return json.load(file)
+    
+def load_xml(file_path):
+    parse = ET.parse(file_path)
+    root = parse.getroot()
+    return root
+
+def transform_load():
+    csv_data = load_csv('../dataset_1.csv')
+    for row in csv_data:
+        episode = {
+            'painting_index': row['painting_index'],
+            'img_src': row['img_src'],
+            'painting_title': row['paintinng_title'],
+            'season': row['season'],
+            'episode_number': row['episode'],
+            'num_colors': row['num_colors'],
+            'youtube_src': row['youtube_src']
+        }
+        session.execute(episodes.insert().values(episode))
